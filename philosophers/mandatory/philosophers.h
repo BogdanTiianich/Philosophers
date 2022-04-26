@@ -6,7 +6,7 @@
 /*   By: hbecki <hbecki@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/08 19:16:24 by hbecki            #+#    #+#             */
-/*   Updated: 2022/04/14 21:01:57 by hbecki           ###   ########.fr       */
+/*   Updated: 2022/04/26 21:48:05 by hbecki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,4 +53,26 @@ typedef struct s_vars
 	char	**envp;
 	char	**s;
 }	t_vars;
+
+int		ft_isnumber(char *str);
+int		ft_check_args(int argc, char **argv);
+int		ft_atoi(const char *s);
+void	ft_putstr_fd(char *s, int fd);
+long	ft_time_diff_from_now_ms(t_timeval t1);
+long	ft_time_from_start(t_timeval t);
+t_rules	*init_rules(int argc, char **argv);
+void	ft_init_game(t_data **data, t_rules *rules, int **avail_forks, int i);
+void	ft_forks_init(int *avail_forks, int number_of_phils);
+void	ft_errors(int code);
+void	ft_free(void **pointer);
+void	ft_check_malloc(void *data);
+int		ft_check_if_dead(t_data data);
+int		waiting_for_forks(t_data data);
+int		ft_philo_eating(t_data data);
+int		ft_philo_sleeping(t_data data);
+int		ft_start_dinning(t_data data);
+void	*philos_life(void *data);
+void	ft_define_forks_i_need(t_philos *philos, int number_of_philos);
+void	ft_run_game(t_data **data, pthread_t \
+*threads, t_rules *rules, int **avail_forks);
 #endif

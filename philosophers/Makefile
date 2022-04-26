@@ -6,38 +6,33 @@
 #    By: hbecki <hbecki@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/01/11 18:30:43 by hbecki            #+#    #+#              #
-#    Updated: 2022/04/21 19:44:48 by hbecki           ###   ########.fr        #
+#    Updated: 2022/04/26 21:34:01 by hbecki           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME =			philo
 
 NAME_BONUS =	philo_bonus
+
 HEAD =			./mandatory/philosophers.h
-
-# GNL_HEAD = get_next_line/get_next_line.h
-
-# LIBDIR = 		./libft/
-
-# LIBFT = 		libft.a
-
-# CHECKERDIR = 	./checker/
 
 HEAD_BONUS =	./bonus/philosophers_bonus.h
 
 SRC =  mandatory/philosophers.c\
-		# mandatory/pipex_utils1.c\
-		# mandatory/pipex_utils2.c\
-		# mandatory/pipex_utils3.c\
-		# mandatory/pipex_utils4.c\
-		# mandatory/pipex_utils5.c
+	mandatory/func_args_handlers.c\
+	mandatory/func_time.c\
+	mandatory/init_funcs.c\
+	mandatory/memory_func.c\
+	mandatory/philos_routine_one.c\
+	mandatory/philos_routine_two.c
 
 SRC_BONUS = bonus/philosophers_bonus.c\
-# 		bonus/pipex_utils1_bonus.c\
-# 		bonus/pipex_utils2_bonus.c\
-# 		bonus/pipex_utils3_bonus.c\
-# 		bonus/pipex_utils4_bonus.c\
-# 		bonus/pipex_utils5_bonus.c
+		bonus/func_args_handlers_bonus.c\
+		bonus/func_time_bonus.c\
+		bonus/init_funcs_bonus.c\
+		bonus/memory_func_bonus.c\
+		bonus/philos_routine_one_bonus.c\
+		bonus/philos_routine_two_bonus.c
 
 # SRC_GNL = get_next_line/get_next_line.c\
 # 			get_next_line/get_next_line_utils.c
@@ -52,9 +47,10 @@ D =				$(SRC:%.c=%.d)
 
 D_BONUS =		$(SRC_BONUS:%.c=%.d)
 
-CFLAGS = 		#-Wall -Werror -Wextra
+CFLAGS = 		-Wall -Werror -Wextra
 
 THR = 			-g -pthread
+
 CC = 			gcc 
 
 RM = 			rm -f
@@ -63,14 +59,6 @@ all : 			$(NAME)
 
 $(NAME) : 		$(OBJ) #$(OBJ_GNL)
 				$(CC) $(CFLAGS) $(OBJ) -o $@
-
-libmake :
-				@make -C $(LIBDIR)
-checker_make :
-				@make -C $(CHECKERDIR)
-
-OBJ_GNL :		$(SRC_GNL) $(GNL_HEAD)
-				$(CC) $(CFLAGS) -c $< -o $@	
 	
 %.o : 			%.c $(HEAD)
 				$(CC) $(CFLAGS) $(THR) -I $(HEAD) -c $< -o $@
@@ -81,11 +69,11 @@ bonus:
 				@make OBJ="$(OBJ_BONUS)" HEAD="$(HEAD_BONUS)" NAME="$(NAME_BONUS)" all
 
 clean:
-				@make clean -C $(LIBDIR)
-				@$(RM) $(OBJ) $(D) $(D_BONUS) $(OBJ_BONUS) $(OBJ_GNL)
+
+				@$(RM) $(OBJ) $(D) $(D_BONUS) $(OBJ_BONUS)
 
 fclean: 		clean
-				@$(RM) $(NAME) $(LIBFT)
+				@$(RM) $(NAME) $(NAME_BONUS)
 
 re: 			fclean all
 
