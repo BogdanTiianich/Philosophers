@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   func_time.c                                        :+:      :+:    :+:   */
+/*   func_time_bonus.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbecki <hbecki@student.42.fr>              +#+  +:+       +#+        */
+/*   By: bogdantiyanich <bogdantiyanich@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/26 20:29:09 by hbecki            #+#    #+#             */
-/*   Updated: 2022/04/26 20:29:20 by hbecki           ###   ########.fr       */
+/*   Updated: 2022/05/17 15:27:33 by bogdantiyan      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,4 +25,18 @@ long	ft_time_diff_from_now_ms(t_timeval t1)
 long	ft_time_from_start(t_timeval t)
 {
 	return (ft_time_diff_from_now_ms(t) / 1000);
+}
+
+void	ft_print_function(t_data data, char *message)
+{
+	
+	sem_wait(data.semaphores->print);
+	if (data.dead_member != 1)
+	{
+		printf("%lu  %d %s\n", ft_time_from_start((data).rules-> \
+		start_time), (data).philos->number, message);
+		sem_post(data.semaphores->print);
+	}
+	else
+		exit(0);
 }

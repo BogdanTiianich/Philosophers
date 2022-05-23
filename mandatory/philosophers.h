@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosophers.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbecki <hbecki@student.42.fr>              +#+  +:+       +#+        */
+/*   By: bogdantiyanich <bogdantiyanich@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/08 19:16:24 by hbecki            #+#    #+#             */
-/*   Updated: 2022/05/12 21:08:09 by hbecki           ###   ########.fr       */
+/*   Updated: 2022/05/13 22:50:48 by bogdantiyan      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,10 +38,12 @@ typedef struct s_philos{
 typedef struct s_data{
 	t_philos		*philos;
 	t_rules			*rules;
+	int				*dead_member;
 	pthread_mutex_t	*take_mutex;
 	pthread_mutex_t	*dead_mutex;
 	pthread_mutex_t	*print_mutex;
 	pthread_mutex_t	**avail_forks;
+	char*			finished;
 }	t_data;
 typedef struct s_vars
 {
@@ -55,7 +57,14 @@ typedef struct s_vars
 	char	**envp;
 	char	**s;
 }	t_vars;
-
+typedef struct s_threads
+{
+	pthread_t 		*threads;
+	pthread_mutex_t *dead_mutex;
+	t_rules			rules;
+	char			*finished;
+	pthread_mutex_t *print_mutex;
+}	t_threads;
 int		ft_isnumber(char *str);
 int		ft_check_args(int argc, char **argv);
 int		ft_atoi(const char *s);
@@ -76,6 +85,7 @@ int		ft_philo_sleeping(t_data data);
 int		ft_start_dinning(t_data data);
 void	*philos_life(void *data);
 void	ft_define_forks_i_need(t_philos *philos, int number_of_philos);
-void	ft_run_game(t_data **data, pthread_t \
-*threads, t_rules *rules, pthread_mutex_t **avail_forks);
+void	ft_run_game(t_data **data, t_threads threads_struct, \
+t_rules *rules, pthread_mutex_t **avail_forks);
+void	ft_print_function(t_data data, char *message);
 #endif

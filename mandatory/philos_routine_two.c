@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philos_routine_two_bonus.c                         :+:      :+:    :+:   */
+/*   philos_routine_two.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbecki <hbecki@student.42.fr>              +#+  +:+       +#+        */
+/*   By: bogdantiyanich <bogdantiyanich@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/26 21:04:08 by hbecki            #+#    #+#             */
-/*   Updated: 2022/04/26 21:30:14 by hbecki           ###   ########.fr       */
+/*   Updated: 2022/05/16 17:01:47 by bogdantiyan      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	*philos_life(void *data)
 			return (NULL);
 		quantity_of_dinners++;
 		if (quantity_of_dinners >= (*(t_data *)data).rules->im_full_times)
-			break ;
+			(*(t_data *)data).finished[(*(t_data *)data).philos->number] = '1';
 		life_and_death = ft_philo_sleeping(*(t_data *)data);
 		if (life_and_death == 1)
 			return (NULL);
