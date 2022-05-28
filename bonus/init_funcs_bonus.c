@@ -6,12 +6,37 @@
 /*   By: bogdantiyanich <bogdantiyanich@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/26 20:30:01 by hbecki            #+#    #+#             */
-/*   Updated: 2022/05/23 14:35:23 by bogdantiyan      ###   ########.fr       */
+/*   Updated: 2022/05/23 18:59:11 by bogdantiyan      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers_bonus.h"
-void	ft_malloc_semaphores(t_semaphores **semaphores)
+
+char	*init_string(char *str, char variance)
+{
+	int		i;
+	char	*target;
+	int		count;
+
+	i = 0;
+	count = 0;
+	while (str[count] != '\0')
+	{
+		count++;
+	}
+	target = (char *)malloc(sizeof(char) * (count + 2));
+	ft_check_malloc(target);
+	while (str[i] != '\0')
+	{
+		target[i] = str[i];
+		i++;
+	}
+	target[i] = variance;
+	target[i + 1] = '\0';
+	return (target);
+}
+
+void	ft_malloc_semaphores_named(t_semaphores **semaphores)
 {
 	*semaphores = (t_semaphores *)malloc(sizeof(t_semaphores));
 	ft_check_malloc(*semaphores);
@@ -23,27 +48,34 @@ void	ft_malloc_semaphores(t_semaphores **semaphores)
 	ft_check_malloc((*semaphores)->everyone_full);
 }
 
-char	*init_string(char* target, char *str)
+sem_t	**ft_malloc_init_semaphores(int qnt)
 {
-	int	i;
-	int	count;
+	sem_t	**sems;
+	int		i;
+	char	*str_tmp;
 
+	sems = NULL;
+	sems = (sem_t **)malloc(sizeof(t_semaphores *) * (qnt + 1));
+	ft_check_malloc(sems);
+	sems[qnt] = NULL;
 	i = 0;
-	count = 0;
-	while (str[count] != '\0')
+	while (i < qnt)
 	{
-		count++;
-	}
-	target = (char *)malloc(sizeof(char) * (count + 1));
-	ft_check_malloc(target);
-	while (str[i] != '\0')
-	{
-		target[i] = str[i];
+		str_tmp = init_string("sem\0", (char)(i + 48));
+		sem_unlink(str_tmp);
+		sems[i] = sem_open(str_tmp, O_CREAT, 0666, 1);
+		if (sems[i] == SEM_FAILED)
+		{
+			printf("Semfailed\n");
+			exit(1);
+		}
+		free(str_tmp);
 		i++;
 	}
-	target[i] = '\0';
-	return (target);
+	return (sems);
 }
+
+
 
 t_rules	*init_rules(int argc, char **argv)
 {
@@ -67,10 +99,10 @@ t_rules	*init_rules(int argc, char **argv)
 	return (rules);
 }
 
-void	ft_init_game(t_data **data, t_rules *rules, t_semaphores *semaphores, int i)
+void	ft_init_game(t_data **data, t_rules *rules, t_semaphores *semaphores, int i, sem_t **sem_start_eat)
 {
-	t_timeval		curr;
-
+	t_timeval	curr;
+	
 	data[i] = (t_data *)malloc(sizeof(t_data));
 	ft_check_malloc(data[i]);
 	(*data[i]).rules = rules;
@@ -82,63 +114,61 @@ void	ft_init_game(t_data **data, t_rules *rules, t_semaphores *semaphores, int i
 	(*data[i]).philos->last_dinner_time = curr;
 	(*data[i]).semaphores = semaphores;
 	(*data[i]).philos->alive = 1;
+	(*data[i]).semaphores->start_eat = sem_start_eat[i];
+}
+
+void	ft_init_named_sems(t_semaphores **semaphores, char* str_name, int qnt)
+{
+	sem_unlink(str_name);
+	(**semaphores).forks = sem_open(str_name, O_CREAT, 0666, \
+	qnt);
+	if ((*semaphores)->forks == SEM_FAILED)
+	{
+		printf("Sem failed\n");
+		exit(1);
+	}
 }
 
 void	ft_init_orig_structers(t_data ***data, \
 t_rules **rules, t_semaphores **semaphores)
 {
-	char*	sem_print;
-	char*	sem_forks;
-	char*	sem_everyone_full;
-	char*	sem_dead;
-	char*	sem_start_to_eat;
+	ft_malloc_semaphores_named(semaphores);
 
-	sem_print = NULL;
-	sem_forks = NULL;
-	sem_everyone_full = NULL;
-	sem_dead = NULL;
-	
-	sem_forks = init_string(sem_forks, "forks\0");
-	
-	sem_unlink(sem_forks);
-	ft_malloc_semaphores(semaphores);
-	(**semaphores).forks = sem_open(sem_forks, O_CREAT, 0666, \
+	ft_init_named_sems(semaphores, "forks\0", (*rules)->number_of_phils / 2);
+	sem_unlink("forks\0");
+	(**semaphores).forks = sem_open("forks\0", O_CREAT, 0666, \
 	(*rules)->number_of_phils / 2);
-	
 	if ((*semaphores)->forks == SEM_FAILED)
 	{
 		printf("Semfailed %d\n", (*rules)->number_of_phils);
 		exit(1);
 	}
-	
-	sem_print = init_string(sem_forks, "print\0");
-	sem_unlink(sem_print);
-	(*semaphores)->print = sem_open(sem_print, O_CREAT, 0666, 1);
+
+	sem_unlink("print\0");
+	(*semaphores)->print = sem_open("print\0", O_CREAT, 0666, 1);
 	if ((*semaphores)->print == SEM_FAILED)
 	{
 		printf("Semfailed %d\n", (*rules)->number_of_phils);
 		exit(1);
 	}
-	
-	sem_everyone_full = init_string(sem_forks, "everyone_full\0");
-	sem_unlink(sem_print);
-	(*semaphores)->everyone_full = sem_open(sem_everyone_full, O_CREAT, 0666, -1 * (*rules)->number_of_phils);
+
+	sem_unlink("everyone_full\0");
+	(*semaphores)->everyone_full = sem_open("everyone_full\0", O_CREAT, 0666, (*rules)->number_of_phils);
 	if ((*semaphores)->print == SEM_FAILED)
 	{
 		printf("Semfailed %d\n", (*rules)->number_of_phils);
 		exit(1);
 	}
-	sem_dead = init_string(sem_dead, "print\0");
-	sem_unlink(sem_dead);
-	(*semaphores)->dead = sem_open(sem_dead, O_CREAT, 0666, 1);
+
+	sem_unlink("dead\0");
+	(*semaphores)->dead = sem_open("dead\0", O_CREAT, 0666, 1);
 	if ((*semaphores)->dead == SEM_FAILED)
 	{
 		printf("Semfailed %d\n", (*rules)->number_of_phils);
 		exit(1);
 	}
+
 	*data = (t_data **)malloc(sizeof(t_data) * ((*rules)->number_of_phils + 1));
 	ft_check_malloc(*data);
 	(*data)[(*rules)->number_of_phils] = NULL;
-	
-	
 }

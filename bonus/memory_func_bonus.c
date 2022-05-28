@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   memory_func_bonus.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hbecki <hbecki@student.42.fr>              +#+  +:+       +#+        */
+/*   By: bogdantiyanich <bogdantiyanich@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/26 21:07:20 by hbecki            #+#    #+#             */
-/*   Updated: 2022/04/26 21:46:18 by hbecki           ###   ########.fr       */
+/*   Updated: 2022/05/23 17:23:57 by bogdantiyan      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@ void	ft_errors(int code)
 		printf("args error\n");
 	if (code == 0)
 		ft_putstr_fd(strerror(errno), 2);
+	if (code == 6)
+		printf("slomano\n");
 	exit(1);
 }
 

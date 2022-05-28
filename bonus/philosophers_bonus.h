@@ -6,7 +6,7 @@
 /*   By: bogdantiyanich <bogdantiyanich@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/08 19:16:24 by hbecki            #+#    #+#             */
-/*   Updated: 2022/05/17 17:59:45 by bogdantiyan      ###   ########.fr       */
+/*   Updated: 2022/05/23 15:54:33 by bogdantiyan      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ typedef struct s_semaphores
 	sem_t	*print;
 	sem_t	*everyone_full;
 	sem_t	*dead;
+	sem_t	*start_eat;
 }	t_semaphores;
 typedef struct s_data{
 	t_philos		*philos;
@@ -73,7 +74,7 @@ void	ft_putstr_fd(char *s, int fd);
 long	ft_time_diff_from_now_ms(t_timeval t1);
 long	ft_time_from_start(t_timeval t);
 t_rules	*init_rules(int argc, char **argv);
-void	ft_init_game(t_data **data, t_rules *rules, t_semaphores *semaphore, int i);
+void	ft_init_game(t_data **data, t_rules *rules, t_semaphores *semaphore, int i, sem_t	**sem_start_eat);
 void	ft_init_orig_structers(t_data ***data, \
 t_rules **rules, t_semaphores **semaphore);
 void	ft_errors(int code);
@@ -88,4 +89,5 @@ int		ft_check_if_dead(t_data data);
 void	ft_run_game(t_data **data, t_semaphores *semaphore, t_rules *rules);
 int		ft_waiter(int num_of_processes, t_data **data);
 void	ft_print_function(t_data data, char *message);
+sem_t	**ft_malloc_init_semaphores(int qnt);
 #endif

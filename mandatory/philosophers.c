@@ -6,7 +6,7 @@
 /*   By: bogdantiyanich <bogdantiyanich@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/05 19:51:30 by hbecki            #+#    #+#             */
-/*   Updated: 2022/05/17 13:43:43 by bogdantiyan      ###   ########.fr       */
+/*   Updated: 2022/05/23 18:42:09 by bogdantiyan      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,27 +27,7 @@ char*	ft_calloc_str(int	length)
 	}
 	return	(string);
 }
-// void	*tracking_death(void *thread_struct)
-// {
-// 	t_threads	thread_strct;
-// 	int			i;
 
-// 	i = 0;
-// 	thread_strct = *(t_threads *)thread_struct;
-// 	printf("trying to unlock kill mutex\n" );
-// 	pthread_mutex_lock(thread_strct.dead_mutex);
-// 	printf("Starting to kill processes\n" );
-// 	sleep(3);
-// 	printf("%d\n", thread_strct.rules.number_of_phils);
-// 	while (i < thread_strct.rules.number_of_phils)
-// 	{
-// 		printf("%d\n", pthread_detach(thread_strct.threads[i]));
-// 		printf("Process number %d has been detached\n", i);
-// 		i++;
-// 	}
-// 	pthread_mutex_unlock(thread_strct.dead_mutex);
-// 	return (NULL);
-// }
 
 void	*tracking_success(void *thread_struct)
 {

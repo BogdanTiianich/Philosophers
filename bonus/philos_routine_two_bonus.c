@@ -6,7 +6,7 @@
 /*   By: bogdantiyanich <bogdantiyanich@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/26 21:04:08 by hbecki            #+#    #+#             */
-/*   Updated: 2022/05/17 18:05:32 by bogdantiyan      ###   ########.fr       */
+/*   Updated: 2022/05/23 18:44:24 by bogdantiyan      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	ft_check_if_dead(t_data data)
 	>= data.rules->time_to_die)
 	{
 		ft_print_function(data, "died");
-		// sem_wait(data.semaphores->print);
+		sem_wait(data.semaphores->print);
 		sem_post(data.semaphores->dead);
 		return (1);
 	}
