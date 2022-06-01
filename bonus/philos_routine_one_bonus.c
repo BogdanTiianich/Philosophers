@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philos_routine_one_bonus.c                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bogdantiyanich <bogdantiyanich@student.    +#+  +:+       +#+        */
+/*   By: hbecki <hbecki@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/26 21:04:08 by hbecki            #+#    #+#             */
-/*   Updated: 2022/05/23 18:44:35 by bogdantiyan      ###   ########.fr       */
+/*   Updated: 2022/06/01 18:40:35 by hbecki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,15 +65,12 @@ int	philos_life(t_data *data)
 	while (1)
 	{
 		life_and_death = ft_start_dinning(*data);
-		if (life_and_death == 1)
-			return (0);
 		quantity_of_dinners++;
 		if (quantity_of_dinners >= (*data).rules->im_full_times)
-			return (0);
+			sem_post(data->semaphores->full_flag_sem[data->philos->number]);
 		life_and_death = ft_philo_sleeping(*data);
-		if (life_and_death == 1)
-			return (0);
 		if ((*data).rules->im_full_times == -1)
-			return (0);
+			sem_post(data->semaphores->full_flag_sem[data->philos->number]);
+		ft_print_function(*data, "is thinking");
 	}
 }
