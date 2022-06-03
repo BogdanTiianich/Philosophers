@@ -6,7 +6,7 @@
 /*   By: hbecki <hbecki@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/08 19:16:24 by hbecki            #+#    #+#             */
-/*   Updated: 2022/06/01 20:45:10 by hbecki           ###   ########.fr       */
+/*   Updated: 2022/06/03 13:48:37 by hbecki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,8 @@ typedef struct s_vars
 	int		count;
 	int		counter;
 	int		argc;
-
+	int		kill_them_all_id;
+	int		everyone_full_id;
 	char	**argv;
 	char	**envp;
 	char	**s;
@@ -97,4 +98,9 @@ int		ft_waiter(int num_of_processes, t_data **data);
 void	ft_print_function(t_data data, char *message);
 sem_t	**ft_malloc_init_semaphores(int qnt);
 sem_t	**ft_start_full_sem(sem_t **sems);
+void	ft_everyone_full_check(t_data **data);
+void	ft_kill_them_all(t_data **data);
+void	kill_us(t_data data);
+void	ft_kill_us_kill(int id, sem_t *dead);
+void	update_dinner_time(t_data **data);
 #endif

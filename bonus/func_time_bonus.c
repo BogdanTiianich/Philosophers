@@ -6,7 +6,7 @@
 /*   By: hbecki <hbecki@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/26 20:29:09 by hbecki            #+#    #+#             */
-/*   Updated: 2022/06/01 18:54:39 by hbecki           ###   ########.fr       */
+/*   Updated: 2022/06/02 15:50:29 by hbecki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,5 +32,6 @@ void	ft_print_function(t_data data, char *message)
 	sem_wait(data.semaphores->print);
 	printf("%lu  %d %s\n", ft_time_from_start((data).rules-> \
 		start_time), (data).philos->number, message);
-	sem_post(data.semaphores->print);
+	if (message[0] != 'd')
+		sem_post(data.semaphores->print);
 }

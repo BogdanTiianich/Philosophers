@@ -6,7 +6,7 @@
 #    By: hbecki <hbecki@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/01/11 18:30:43 by hbecki            #+#    #+#              #
-#    Updated: 2022/04/28 19:39:49 by hbecki           ###   ########.fr        #
+#    Updated: 2022/06/02 15:09:37 by hbecki           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,6 +32,7 @@ SRC_BONUS = bonus/philosophers_bonus.c\
 		bonus/init_funcs_bonus.c\
 		bonus/memory_func_bonus.c\
 		bonus/philos_routine_one_bonus.c\
+		bonus/monitoring_bonus.c\
 		bonus/philos_routine_two_bonus.c
 
 

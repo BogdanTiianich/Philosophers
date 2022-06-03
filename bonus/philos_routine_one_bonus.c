@@ -6,7 +6,7 @@
 /*   By: hbecki <hbecki@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/26 21:04:08 by hbecki            #+#    #+#             */
-/*   Updated: 2022/06/01 18:40:35 by hbecki           ###   ########.fr       */
+/*   Updated: 2022/06/02 15:11:44 by hbecki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ int	ft_philo_sleeping(t_data data)
 
 	gettimeofday(&start_sleeping_time, NULL);
 	ft_print_function(data, "is sleeping");
+	usleep(data.rules->time_to_sleep);
 	return (0);
 }
 

@@ -6,102 +6,25 @@
 /*   By: hbecki <hbecki@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/05 19:51:30 by hbecki            #+#    #+#             */
-/*   Updated: 2022/06/01 20:59:56 by hbecki           ###   ########.fr       */
+/*   Updated: 2022/06/03 14:11:42 by hbecki           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers_bonus.h"
 
-void	ft_everyone_full_check(t_data **data)
+int	ft_run_new_proc(void (*func)(t_data **), t_data **data, int i)
 {
-	int	i;
+	int	id;
 
-	i = 0;
-	while (i < data[0]->rules->number_of_phils)
+	id = fork();
+	if (id == 0)
 	{
-		sem_wait((*data[0]).semaphores->full_flag_sem[i]);
-		i++;
+		printf("Process number %d  %d has started\n", getpid(), i);
+		func(data);
+		printf("Process number %d  %d is about to finish\n", getpid(), i);
+		exit(0);
 	}
-	sem_post(data[0]->semaphores->dead);
-	sem_post(data[0]->semaphores->dead_flag_to_kill);
-	sem_wait(data[0]->semaphores->print);
-	exit(0);
-}
-
-void	ft_kill_them_all(t_data **data)
-{
-	sem_t	*dead;
-	int		i;
-
-	i = 0;
-	dead = data[0]->semaphores->dead;
-	sem_wait(dead);
-	while (i < data[0]->rules->number_of_phils)
-	{
-		kill(data[i]->philos->id[0], SIGSEGV);
-		kill(data[i]->philos->id[1], SIGSEGV);
-		i++;
-	}
-	sem_post(dead);
-	sem_wait(data[0]->semaphores->print);
-	printf("KILLED\n");
-}
-
-void	kill_us(t_data data)
-{
-	t_timeval	start_eating_time;
-
-	gettimeofday(&start_eating_time, NULL);
-	while (1)
-	{
-		if (ft_time_diff_from_now_ms(start_eating_time) \
-		>= data.rules->time_to_die)
-		{
-			ft_print_function(data, "died");
-			sem_post(data.semaphores->dead);
-			sem_post(data.semaphores->dead_flag_to_kill);
-			sem_wait(data.semaphores->print);
-			exit(0);
-		}
-	}
-	exit(0);
-}
-
-void	ft_kill_us_kill(int id, sem_t *dead)
-{
-	sem_wait(dead);
-	kill(id, SIGSEGV);
-	printf("KILLED killer\n");
-	exit(0);
-}
-
-void	update_dinner_time(t_data *data)
-{
-	t_timeval	start_eating_time;
-	int			id_kill_us;
-	int			id_kill_us_kill;
-
-	while (1)
-	{
-		id_kill_us = fork();
-		if (id_kill_us == 0)
-		{
-			kill_us(*data);
-			exit(0);
-		}
-		id_kill_us_kill = fork();
-		if (id_kill_us_kill == 0)
-		{
-			ft_kill_us_kill(id_kill_us, data->semaphores->dead_flag_to_kill);
-			exit(0);
-		}
-		sem_wait(data->semaphores->start_eat);
-		kill(id_kill_us, SIGSEGV);
-		kill(id_kill_us_kill, SIGSEGV);
-		gettimeofday(&start_eating_time, NULL);
-		data->philos->last_dinner_time = start_eating_time;
-	}
-	exit(0);
+	return (id);
 }
 
 void	ft_run_game(t_data **data, t_semaphores *semaphores, t_rules *rules)
@@ -122,19 +45,23 @@ void	ft_run_game(t_data **data, t_semaphores *semaphores, t_rules *rules)
 		id = fork();
 		if (id == 0)
 		{
+			printf("Process number %d has started\n", getpid());
 			philos_life(data[vars.i]);
+			printf("Process number %d is about to finish\n", getpid());
 			exit(0);
 		}
 		else
 		{
 			(*data[vars.i]).philos->id[0] = id;
-			id = fork();
-			if (id == 0)
-			{
-				update_dinner_time(data[vars.i]);
-				exit(0);
-			}
-			(*data[vars.i]).philos->id[1] = id;
+			(*data[vars.i]).philos->id[1] = \
+			ft_run_new_proc(update_dinner_time, &data[vars.i], 1);
+			// id = fork();
+			// if (id == 0)
+			// {
+			// 	update_dinner_time(data[vars.i]);
+			// 	exit(0);
+			// }
+			// (*data[vars.i]).philos->id[1] = id;
 		}	
 		vars.i++;
 	}
@@ -159,7 +86,7 @@ int	main(int argc, char **argv)
 	t_rules			*rules;
 	t_data			**data;
 	t_semaphores	*semaphores;
-	int				id;
+	t_vars			vars;
 
 	if (argc < 5 || argc > 6)
 	{
@@ -171,19 +98,12 @@ int	main(int argc, char **argv)
 	ft_check_malloc(rules);
 	ft_init_orig_structers(&data, &rules, &semaphores);
 	ft_run_game(data, semaphores, rules);
-	id = fork();
-	if (id == 0)
-	{
-		ft_everyone_full_check(data);
-		exit(0);
-	}
-	id = fork();
-	if (id == 0)
-	{
-		ft_kill_them_all(data);
-		exit(0);
-	}
+	vars.everyone_full_id = ft_run_new_proc(ft_everyone_full_check, data, 2);
+	vars.kill_them_all_id = ft_run_new_proc(ft_kill_them_all, data, 3);
 	ft_waiter(rules->number_of_phils, data);
+	kill(vars.everyone_full_id, SIGSEGV);
+	kill(vars.kill_them_all_id, SIGSEGV);
+	printf("SEM IS ON IN parent\n");
 	printf("FINISH\n");
 	exit (0);
 	return (0);
